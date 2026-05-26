@@ -89,26 +89,62 @@
   @keyframes logoIn{from{opacity:0;transform:translateY(-18px) scale(.94);}to{opacity:1;transform:none;}}
   @keyframes logoPulse{0%,100%{filter:drop-shadow(0 0 12px rgba(25,255,122,.45));}50%{filter:drop-shadow(0 0 26px rgba(0,255,195,.75));}}
 
-  /* ===== AVATAR ===== */
+  /* ===== AVATAR (player tocando) ===== */
   .photo-wrap{
-    margin-top:26px;position:relative;
+    margin-top:30px;position:relative;
     width:clamp(160px,46vw,196px);aspect-ratio:1/1;
     border-radius:50%;
-    padding:4px;
-    background:conic-gradient(from 0deg,var(--neon),var(--neon-2),var(--neon-3),var(--neon));
-    animation:photoIn .9s .15s cubic-bezier(.2,.9,.2,1) both, ringGlow 4s ease-in-out 1s infinite;
+    display:grid;place-items:center;
+    animation:photoIn .9s .15s cubic-bezier(.2,.9,.2,1) both;
   }
   @keyframes photoIn{from{opacity:0;transform:scale(.8);}to{opacity:1;}}
-  @keyframes ringGlow{0%,100%{box-shadow:0 0 26px rgba(25,255,122,.42);}50%{box-shadow:0 0 40px rgba(0,255,195,.6);}}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* aro colorido girando (o "negocio atras mexendo") + glow que respira */
+  .photo-wrap::before{
+    content:"";position:absolute;inset:0;border-radius:50%;z-index:0;
+    background:conic-gradient(from 0deg,var(--neon),var(--neon-2),var(--neon-3),var(--neon-2),var(--neon));
+    animation:spin 5s linear infinite, ringGlow 4s ease-in-out 1s infinite;
+  }
+  @keyframes ringGlow{0%,100%{box-shadow:0 0 26px rgba(25,255,122,.42);}50%{box-shadow:0 0 42px rgba(0,255,195,.65);}}
+
+  /* ondas de som saindo (tipo player tocando) */
+  .pulse{
+    position:absolute;inset:0;border-radius:50%;z-index:0;
+    border:2px solid var(--neon);
+    animation:wave 2.6s ease-out infinite;
+  }
+  .pulse.d2{animation-delay:1.3s;}
+  @keyframes wave{0%{transform:scale(.96);opacity:.55;}100%{transform:scale(1.42);opacity:0;}}
+
+  /* a FOTO fica 100% parada, em pé */
   .photo-wrap img{
-    width:100%;height:100%;object-fit:cover;object-position:50% 28%;
+    position:relative;z-index:1;
+    width:calc(100% - 8px);height:calc(100% - 8px);
+    object-fit:cover;object-position:50% 28%;
     border-radius:50%;display:block;
     border:3px solid var(--bg);
-    /* foto estática, em pé */
   }
-  /* selo "ao vivo" pulsante */
+
+  /* equalizer (player tocando) */
+  .eq{
+    position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);z-index:3;
+    display:flex;align-items:flex-end;gap:3px;height:18px;
+    padding:5px 9px;border-radius:99px;
+    background:rgba(2,16,10,.82);border:1px solid var(--card-brd);
+    backdrop-filter:blur(4px);box-shadow:0 0 14px -2px var(--neon);
+  }
+  .eq i{width:3px;height:100%;border-radius:2px;background:var(--neon);transform-origin:bottom;
+    animation:eq .9s ease-in-out infinite;}
+  .eq i:nth-child(2){animation-delay:.18s;background:var(--neon-2);}
+  .eq i:nth-child(3){animation-delay:.36s;}
+  .eq i:nth-child(4){animation-delay:.54s;background:var(--neon-2);}
+  .eq i:nth-child(5){animation-delay:.72s;}
+  @keyframes eq{0%,100%{transform:scaleY(.28);}50%{transform:scaleY(1);}}
+
+  /* selo do lançamento */
   .live{
-    position:absolute;bottom:8px;right:8px;z-index:2;
+    position:absolute;top:6px;right:2px;z-index:3;
     display:flex;align-items:center;gap:5px;
     background:rgba(2,16,10,.85);border:1px solid var(--neon);
     color:var(--neon);font-weight:700;font-size:10px;letter-spacing:1px;
@@ -238,8 +274,11 @@
     <img class="logo" src="assets/logo.png" alt="Enzo O Bruxo" />
 
     <div class="photo-wrap">
+      <span class="pulse"></span>
+      <span class="pulse d2"></span>
       <img src="assets/avatar.jpg" alt="Foto de Enzo O Bruxo" />
       <span class="live">NOVO 3.0</span>
+      <span class="eq"><i></i><i></i><i></i><i></i><i></i></span>
     </div>
 
     <p class="slogan">É O BRUXO HEIN!</p>
